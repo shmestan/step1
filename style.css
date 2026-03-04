@@ -133,32 +133,3 @@ footer { text-align: center; padding: 2rem; font-size: 0.76rem; color: var(--tex
   margin: 0 auto; 
   padding: 2.5rem 2rem 4rem; 
 }
-
-/* New Practice Exam Dashboard Styles */
-.exam-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.25rem;
-  margin-top: 1rem;
-}
-
-.exam-card {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1.25rem;
-}
-
-.exam-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--sage-pale);
-}
-
-.exam-score {
-  font-family: 'DM Serif Display', serif;
-  color: var(--sage);
-  font-size: 1.1rem;
-}
