@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixorize Immunology — Step 1</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">Step 1 Study Hub 🌿</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="tracker-sketchy-micro.html">Sketchy Micro</a></li>
+    <li><a href="tracker-sketchy-pharm.html">Sketchy Pharm</a></li>
+    <li><a href="tracker-bootcamp.html">Bootcamp</a></li>
+    <li><a href="tracker-pixorize-immuno.html" class="active">Pixorize Immuno</a></li>
+    <li><a href="tracker-pixorize-biochem.html">Pixorize Biochem</a></li>
+  </ul>
+</nav>
+
+<div class="tracker-page">
+  <a class="back-link" href="index.html">← Back to Hub</a>
+
+  <div class="tracker-page-header">
+    <h1>🔬 Pixorize <em>Immunology</em></h1>
+    <p>Track Anki and lecture completion for all Pixorize Immunology videos.</p>
+  </div>
+
+  <div class="progress-header">
+    <div>
+      <div class="prog-big-num" id="overall-pct">0%</div>
+      <div class="prog-big-label">overall complete</div>
+    </div>
+    <div class="prog-bar-full">
+      <div class="prog-bar-full-wrap">
+        <div class="prog-bar-full-fill" id="overall-bar" style="width:0%"></div>
+      </div>
+      <div class="prog-bar-full-label" id="overall-label">0 of 0 items checked</div>
+    </div>
+  </div>
+
+  <div class="tab-strip" id="tab-strip"></div>
+  <div id="panels"></div>
+</div>
+
+<footer>Step 1 Study Hub · 🌿</footer>
+
+<script>
+const STORAGE_KEY = 'pix_immuno_state';
+
+const DATA = {
+  'Immunoglobulins': [
+    {n:'Immunoglobulin A (IgA)',                       anki:false, lec:true},
+    {n:'Immunoglobulin G (IgG)',                       anki:false, lec:true},
+    {n:'Immunoglobulin M (IgM)',                       anki:false, lec:true},
+    {n:'Immunoglobulin E (IgE)',                       anki:false, lec:true},
+    {n:'Immunoglobulin D (IgD)',                       anki:false, lec:true},
+  ],
+  'Complement': [
+    {n:'Common Complement Pathway',                    anki:false, lec:true},
+    {n:'Classical Complement Pathway',                 anki:false, lec:true},
+    {n:'Alternative Complement Pathway',               anki:false, lec:true},
+    {n:'Lectin Complement Pathway',                    anki:false, lec:true},
+  ],
+  'Innate Immune Cells': [
+    {n:'Neutrophils — Overview',                       anki:false, lec:false},
+    {n:'Neutrophils — Granules',                       anki:false, lec:false},
+    {n:'Neutrophils — Oxidative Burst',                anki:false, lec:false},
+    {n:'Basophils',                                    anki:false, lec:false},
+    {n:'Eosinophils',                                  anki:false, lec:false},
+    {n:'Mast Cells',                                   anki:false, lec:false},
+    {n:'Monocytes & Macrophages',                      anki:false, lec:false},
+    {n:'Natural Killer (NK) Cells',                    anki:false, lec:false},
+    {n:'Dendritic Cells',                              anki:false, lec:false},
+  ],
+  'B Cells & T Cells': [
+    {S:'Antigen Presentation'},
+    {n:'MHC Class I',                                  anki:false, lec:false},
+    {n:'MHC Class II',                                 anki:false, lec:false},
+    {S:'B Cells'},
+    {n:'B Cells — Overview',                           anki:false, lec:false},
+    {n:'B Cells — Activation',                         anki:false, lec:false},
+    {n:'Plasma B Cells',                               anki:false, lec:false},
+    {n:'Memory B Cells',                               anki:false, lec:false},
+    {S:'T Cells'},
+    {n:'T Cell Overview',                              anki:false, lec:false},
+    {n:'T Cell Activation',                            anki:false, lec:false},
+    {n:'Cytotoxic T Cells (CD8+)',                     anki:false, lec:false},
+    {n:'Helper T Cells (CD4+)',                        anki:false, lec:false},
+    {n:'Regulatory T Cells',                           anki:false, lec:false},
+  ],
+  'Hypersensitivity': [
+    {n:'Type I Hypersensitivity (IgE-mediated)',       anki:false, lec:false},
+    {n:'Type II Hypersensitivity (Cytotoxic)',         anki:false, lec:false},
+    {n:'Type III Hypersensitivity (Immune Complex)',   anki:false, lec:false},
+    {n:'Type IV Hypersensitivity (Cell-mediated)',     anki:false, lec:false},
+  ],
+  'Immunodeficiencies': [
+    {S:'B Cell Deficiencies'},
+    {n:'X-linked Agammaglobulinemia (Bruton\'s)',      anki:false, lec:false},
+    {n:'Common Variable Immunodeficiency',             anki:false, lec:false},
+    {n:'IgA Deficiency',                               anki:false, lec:false},
+    {S:'T Cell Deficiencies'},
+    {n:'DiGeorge Syndrome',                            anki:false, lec:false},
+    {n:'Hyper-IgM Syndrome',                          anki:false, lec:false},
+    {S:'Combined'},
+    {n:'SCID (Severe Combined Immunodeficiency)',       anki:false, lec:false},
+    {n:'Wiskott-Aldrich Syndrome',                     anki:false, lec:false},
+    {n:'Ataxia-Telangiectasia',                        anki:false, lec:false},
+    {S:'Phagocyte & Complement'},
+    {n:'Chronic Granulomatous Disease',                anki:false, lec:false},
+    {n:'Leukocyte Adhesion Deficiency',                anki:false, lec:false},
+    {n:'Chediak-Higashi Syndrome',                     anki:false, lec:false},
+    {n:'Complement Deficiencies',                      anki:false, lec:false},
+  ],
+  'Transplant & Autoimmunity': [
+    {n:'Transplant Immunology',                        anki:false, lec:false},
+    {n:'Graft-vs-Host Disease',                        anki:false, lec:false},
+    {n:'Autoimmune Diseases Overview',                 anki:false, lec:false},
+    {n:'Systemic Lupus Erythematosus (SLE)',           anki:false, lec:false},
+    {n:'Sjögren\'s Syndrome',                          anki:false, lec:false},
+  ],
+};
+
+// ── STATE ────────────────────────────────────────────────────────
+function gs()  { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) { return {}; } }
+function ss(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+function getChk(tab, idx, f) { const v = gs()[`${tab}_${idx}_${f}`]; return v ?? null; }
+function setChk(tab, idx, f, v) { const s = gs(); s[`${tab}_${idx}_${f}`] = v; ss(s); }
+
+// ── PROGRESS ─────────────────────────────────────────────────────
+function calcTabPct(tab) {
+  let total = 0, done = 0;
+  DATA[tab].forEach((item, idx) => {
+    if (item.S) return;
+    ['anki', 'lec'].forEach(f => {
+      total++;
+      const v = getChk(tab, idx, f);
+      if ((v !== null ? v : item[f])) done++;
+    });
+  });
+  return { pct: total ? Math.round(done / total * 100) : 0, done, total };
+}
+
+function calcOverall() {
+  let total = 0, done = 0;
+  Object.keys(DATA).forEach(tab => {
+    const r = calcTabPct(tab); total += r.total; done += r.done;
+  });
+  return { pct: total ? Math.round(done / total * 100) : 0, done, total };
+}
+
+function refreshOverall() {
+  const r = calcOverall();
+  document.getElementById('overall-pct').textContent   = r.pct + '%';
+  document.getElementById('overall-bar').style.width   = r.pct + '%';
+  document.getElementById('overall-label').textContent = `${r.done} of ${r.total} items checked`;
+}
+
+// ── RENDER ───────────────────────────────────────────────────────
+function safeId(tab) { return tab.replace(/[^a-z0-9]/gi, '_'); }
+
+function buildTabs() {
+  document.getElementById('tab-strip').innerHTML = Object.keys(DATA).map((tab, i) =>
+    `<button class="ts-btn${i === 0 ? ' active' : ''}" onclick="switchTab('${tab}', this)">${tab}</button>`
+  ).join('');
+}
+
+function buildPanel(tab) {
+  const items = DATA[tab];
+  let html = '';
+  items.forEach((item, idx) => {
+    if (item.S) { html += `<div class="t-section-title">${item.S}</div>`; return; }
+    const lecOn  = (getChk(tab, idx, 'lec')  ?? item.lec);
+    const ankiOn = (getChk(tab, idx, 'anki') ?? item.anki);
+    html += `<div class="t-item">
+      <span class="t-name">${item.n}</span>
+      <div class="check-grp">
+        <div class="check-col">
+          <span class="check-lbl">Lec</span>
+          <div class="chk${lecOn ? ' on' : ''}" onclick="tog('${tab}',${idx},'lec',this)"></div>
+        </div>
+        <div class="check-col">
+          <span class="check-lbl">Anki</span>
+          <div class="chk${ankiOn ? ' on' : ''}" onclick="tog('${tab}',${idx},'anki',this)"></div>
+        </div>
+      </div>
+    </div>`;
+  });
+  return html;
+}
+
+function buildPanels() {
+  document.getElementById('panels').innerHTML = Object.keys(DATA).map((tab, i) =>
+    `<div class="tab-panel${i === 0 ? ' active' : ''}" id="panel-${safeId(tab)}">${buildPanel(tab)}</div>`
+  ).join('');
+}
+
+function switchTab(tab, btn) {
+  document.querySelectorAll('#tab-strip .ts-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#panels .tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + safeId(tab)).classList.add('active');
+}
+
+function tog(tab, idx, f, el) {
+  const on = !el.classList.contains('on');
+  el.classList.toggle('on', on);
+  setChk(tab, idx, f, on);
+  refreshOverall();
+}
+
+// ── INIT ─────────────────────────────────────────────────────────
+buildTabs();
+buildPanels();
+refreshOverall();
+</script>
+</body>
+</html>
