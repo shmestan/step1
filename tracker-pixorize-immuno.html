@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Pixorize Immunology — Step 1</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="index.html">Step 1 Study Hub 🌿</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="tracker-sketchy-micro.html">Sketchy Micro</a></li>
+    <li><a href="tracker-sketchy-pharm.html">Sketchy Pharm</a></li>
+    <li><a href="tracker-bootcamp.html">Bootcamp</a></li>
+    <li><a href="tracker-pixorize-immuno.html" class="active">Pixorize Immuno</a></li>
+    <li><a href="tracker-pixorize-biochem.html">Pixorize Biochem</a></li>
+  </ul>
+</nav>
+<div class="tracker-page">
+  <a class="back-link" href="index.html">← Back to Hub</a>
+  <div class="tracker-page-header">
+    <h1>🔬 Pixorize <em>Immunology</em></h1>
+    <p>Scroll through all topics, click any subject to expand and check off videos.</p>
+  </div>
+  <div class="progress-header">
+    <div>
+      <div class="prog-big-num" id="overall-pct">0%</div>
+      <div class="prog-big-label">overall complete</div>
+    </div>
+    <div class="prog-bar-full">
+      <div class="prog-bar-full-wrap"><div class="prog-bar-full-fill" id="overall-bar" style="width:0%"></div></div>
+      <div class="prog-bar-full-label" id="overall-label">0 of 0 items checked</div>
+    </div>
+  </div>
+  <div id="subjects"></div>
+</div>
+<footer>Step 1 Study Hub · 🌿</footer>
+<script>
+const KEY='pix_immuno_state';
+function gs(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return{}}}
+function ss(s){localStorage.setItem(KEY,JSON.stringify(s))}
+function getChk(sid,si,idx,f){const v=gs()[`${sid}_${si}_${idx}_${f}`];return v??null}
+function setChk(sid,si,idx,f,v){const s=gs();s[`${sid}_${si}_${idx}_${f}`]=v;ss(s)}
+
+const SUBJECTS=[
+  {id:'immunoglobulins',title:'Immunoglobulins',dur:'~30m',sections:[{items:[
+    {n:'Immunoglobulin A (IgA)',  lec:true, anki:false},
+    {n:'Immunoglobulin G (IgG)',  lec:true, anki:false},
+    {n:'Immunoglobulin M (IgM)',  lec:true, anki:false},
+    {n:'Immunoglobulin E (IgE)',  lec:true, anki:false},
+    {n:'Immunoglobulin D (IgD)',  lec:true, anki:false},
+  ]}]},
+  {id:'complement',title:'Complement',dur:'~25m',sections:[{items:[
+    {n:'Common Complement Pathway',      lec:true, anki:false},
+    {n:'Classical Complement Pathway',   lec:true, anki:false},
+    {n:'Alternative Complement Pathway', lec:true, anki:false},
+    {n:'Lectin Complement Pathway',      lec:true, anki:false},
+  ]}]},
+  {id:'innate',title:'Innate Immune Cells',dur:'~45m',sections:[{items:[
+    {n:'Neutrophils — Overview',       lec:false, anki:false},
+    {n:'Neutrophils — Granules',       lec:false, anki:false},
+    {n:'Neutrophils — Oxidative Burst',lec:false, anki:false},
+    {n:'Basophils',                    lec:false, anki:false},
+    {n:'Eosinophils',                  lec:false, anki:false},
+    {n:'Mast Cells',                   lec:false, anki:false},
+    {n:'Monocytes & Macrophages',      lec:false, anki:false},
+    {n:'Natural Killer (NK) Cells',    lec:false, anki:false},
+    {n:'Dendritic Cells',              lec:false, anki:false},
+  ]}]},
+  {id:'adaptive',title:'B Cells & T Cells',dur:'~1h',sections:[
+    {title:'Antigen Presentation',items:[
+      {n:'MHC Class I',   lec:false, anki:false},
+      {n:'MHC Class II',  lec:false, anki:false},
+    ]},
+    {title:'B Cells',items:[
+      {n:'B Cells — Overview',    lec:false, anki:false},
+      {n:'B Cells — Activation',  lec:false, anki:false},
+      {n:'Plasma B Cells',        lec:false, anki:false},
+      {n:'Memory B Cells',        lec:false, anki:false},
+    ]},
+    {title:'T Cells',items:[
+      {n:'T Cell Overview',               lec:false, anki:false},
+      {n:'T Cell Activation',             lec:false, anki:false},
+      {n:'Cytotoxic T Cells (CD8+)',       lec:false, anki:false},
+      {n:'Helper T Cells (CD4+)',          lec:false, anki:false},
+      {n:'Regulatory T Cells',            lec:false, anki:false},
+    ]},
+  ]},
+  {id:'hypersensitivity',title:'Hypersensitivity',dur:'~30m',sections:[{items:[
+    {n:'Type I — IgE-mediated',      lec:false, anki:false},
+    {n:'Type II — Cytotoxic',        lec:false, anki:false},
+    {n:'Type III — Immune Complex',  lec:false, anki:false},
+    {n:'Type IV — Cell-mediated',    lec:false, anki:false},
+  ]}]},
+  {id:'immunodef',title:'Immunodeficiencies',dur:'~45m',sections:[
+    {title:'B Cell Deficiencies',items:[
+      {n:'X-linked Agammaglobulinemia (Bruton\'s)',  lec:false, anki:false},
+      {n:'Common Variable Immunodeficiency',         lec:false, anki:false},
+      {n:'IgA Deficiency',                           lec:false, anki:false},
+    ]},
+    {title:'T Cell & Combined',items:[
+      {n:'DiGeorge Syndrome',                  lec:false, anki:false},
+      {n:'Hyper-IgM Syndrome',                 lec:false, anki:false},
+      {n:'SCID',                               lec:false, anki:false},
+      {n:'Wiskott-Aldrich Syndrome',           lec:false, anki:false},
+      {n:'Ataxia-Telangiectasia',              lec:false, anki:false},
+    ]},
+    {title:'Phagocyte & Complement',items:[
+      {n:'Chronic Granulomatous Disease',   lec:false, anki:false},
+      {n:'Leukocyte Adhesion Deficiency',   lec:false, anki:false},
+      {n:'Chediak-Higashi Syndrome',        lec:false, anki:false},
+      {n:'Complement Deficiencies',         lec:false, anki:false},
+    ]},
+  ]},
+  {id:'transplant',title:'Transplant & Autoimmunity',dur:'~30m',sections:[{items:[
+    {n:'Transplant Immunology',        lec:false, anki:false},
+    {n:'Graft-vs-Host Disease',        lec:false, anki:false},
+    {n:'Autoimmune Diseases Overview', lec:false, anki:false},
+    {n:'Systemic Lupus Erythematosus', lec:false, anki:false},
+    {n:'Sjögren\'s Syndrome',          lec:false, anki:false},
+  ]}]},
+];
+
+function calcSubject(subj){let total=0,done=0;subj.sections.forEach((sec,si)=>sec.items.forEach((item,idx)=>{['lec','anki'].forEach(f=>{total++;const v=getChk(subj.id,si,idx,f);if((v!==null?v:item[f]))done++;})}));return{pct:total?Math.round(done/total*100):0,done,total};}
+function calcOverall(){let total=0,done=0;SUBJECTS.forEach(s=>{const r=calcSubject(s);total+=r.total;done+=r.done;});return{pct:total?Math.round(done/total*100):0,done,total};}
+function refreshOverall(){const r=calcOverall();document.getElementById('overall-pct').textContent=r.pct+'%';document.getElementById('overall-bar').style.width=r.pct+'%';document.getElementById('overall-label').textContent=`${r.done} of ${r.total} items checked`;}
+function buildAll(){document.getElementById('subjects').innerHTML=SUBJECTS.map(subj=>{const r=calcSubject(subj);const body=subj.sections.map((sec,si)=>{const rows=sec.items.map((item,idx)=>{const lecOn=getChk(subj.id,si,idx,'lec')??item.lec;const ankiOn=getChk(subj.id,si,idx,'anki')??item.anki;return`<div class="t-item"><span class="t-name">${item.n}</span><div class="check-grp"><div class="check-col"><span class="check-lbl">Lec</span><div class="chk${lecOn?' on':''}" onclick="tog('${subj.id}',${si},${idx},'lec',this)"></div></div><div class="check-col"><span class="check-lbl">Anki</span><div class="chk${ankiOn?' on':''}" onclick="tog('${subj.id}',${si},${idx},'anki',this)"></div></div></div></div>`;}).join('');const t=sec.title?`<div class="sub-section-title">${sec.title}</div>`:'';return`<div class="sub-section">${t}${rows}</div>`;}).join('');return`<div class="subject-block" id="sb-${subj.id}"><div class="subject-header" onclick="toggle('${subj.id}')"><span class="subject-title">${subj.title}</span><div class="subject-meta"><span class="subject-dur">⏱ ${subj.dur}</span><div class="subj-bar-wrap"><div class="subj-bar-fill" id="bar-${subj.id}" style="width:${r.pct}%"></div></div><span class="subject-pct" id="pct-${subj.id}">${r.pct}%</span><span class="subject-chevron">▼</span></div></div><div class="subject-body">${body}</div></div>`;}).join('');}
+function toggle(id){document.getElementById('sb-'+id).classList.toggle('open')}
+function tog(sid,si,idx,f,el){const on=!el.classList.contains('on');el.classList.toggle('on',on);setChk(sid,si,idx,f,on);const subj=SUBJECTS.find(s=>s.id===sid);if(subj){const r=calcSubject(subj);document.getElementById('pct-'+sid).textContent=r.pct+'%';document.getElementById('bar-'+sid).style.width=r.pct+'%';}refreshOverall();}
+buildAll();refreshOverall();
+</script>
+</body></html>

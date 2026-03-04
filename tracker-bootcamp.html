@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Bootcamp — Step 1</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="index.html">Step 1 Study Hub 🌿</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="tracker-sketchy-micro.html">Sketchy Micro</a></li>
+    <li><a href="tracker-sketchy-pharm.html">Sketchy Pharm</a></li>
+    <li><a href="tracker-bootcamp.html" class="active">Bootcamp</a></li>
+    <li><a href="tracker-pixorize-immuno.html">Pixorize Immuno</a></li>
+    <li><a href="tracker-pixorize-biochem.html">Pixorize Biochem</a></li>
+  </ul>
+</nav>
+<div class="tracker-page">
+  <a class="back-link" href="index.html">← Back to Hub</a>
+  <div class="tracker-page-header">
+    <h1>📊 <em>Bootcamp</em></h1>
+    <p>Lecture and Anki completion — scroll through all subjects, click any to expand.</p>
+  </div>
+  <div class="progress-header">
+    <div>
+      <div class="prog-big-num" id="overall-pct">0%</div>
+      <div class="prog-big-label">overall complete</div>
+    </div>
+    <div class="prog-bar-full">
+      <div class="prog-bar-full-wrap"><div class="prog-bar-full-fill" id="overall-bar" style="width:0%"></div></div>
+      <div class="prog-bar-full-label" id="overall-label">0 of 0 items checked</div>
+    </div>
+  </div>
+  <div id="subjects"></div>
+</div>
+<footer>Step 1 Study Hub · 🌿</footer>
+<script>
+const KEY = 'bc_state';
+function gs(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return{}}}
+function ss(s){localStorage.setItem(KEY,JSON.stringify(s))}
+function getChk(sid,si,idx,f){const v=gs()[`${sid}_${si}_${idx}_${f}`];return v??null}
+function setChk(sid,si,idx,f,v){const s=gs();s[`${sid}_${si}_${idx}_${f}`]=v;ss(s)}
+
+// Each subject: { id, title, dur, sections:[{ title?, items:[{n,dur?,lec,anki}] }] }
+const SUBJECTS = [
+  { id:'pathology', title:'Pathology', dur:'3h 21m',
+    sections:[
+      { title:'Pathology', items:[
+        {n:'1. Inflammatory Response',        dur:'0:54', lec:false, anki:false},
+        {n:'2. Cellular Injury & Neoplasia',  dur:'2:27', lec:false, anki:false},
+      ]},
+      { title:'Dermatology', items:[
+        {n:'1. General Principles',                        lec:false, anki:false},
+        {n:'2. Non-Rheumatologic Diseases',                lec:false, anki:false},
+        {n:'3. Infectious Diseases of the Skin',dur:'1:36',lec:false, anki:false},
+        {n:'4. Malignant Skin Disorders',       dur:'0:21',lec:false, anki:false},
+        {n:'5. Additional Dermatologic Disorders',dur:'1:36',lec:false, anki:false},
+      ]},
+      { title:'Musculoskeletal', items:[
+        {n:'1. Skeletal Muscle',               dur:'1:20', lec:false, anki:false},
+        {n:'2. General Principles',                        lec:false, anki:false},
+        {n:'3. Rheumatologic Diseases',        dur:'2:01', lec:false, anki:false},
+        {n:'4. Seroneg. Spondyloarthritis',    dur:'0:45', lec:false, anki:false},
+        {n:'5. Vasculitides',                  dur:'1:49', lec:false, anki:false},
+        {n:'6. Primary Bone Tumors',           dur:'1:11', lec:false, anki:false},
+        {n:'7. Spine',                         dur:'1:27', lec:false, anki:false},
+        {n:'8. Brachial Plexus Nerves & Lesions',dur:'0:25',lec:false, anki:false},
+        {n:'9. Shoulder & Elbow',             dur:'0:56', lec:false, anki:false},
+        {n:'10. Wrist & Hand',                dur:'1:36', lec:false, anki:false},
+        {n:'11. Lower Extremity Nerves',       dur:'1:05', lec:false, anki:false},
+        {n:'12. Hip & Knee',                  dur:'1:40', lec:false, anki:false},
+        {n:'13. Foot & Ankle',                dur:'0:51', lec:false, anki:false},
+        {n:'14. Childhood MSK Pathology',     dur:'1:22', lec:false, anki:false},
+        {n:'15. Pharmacology',                             lec:false, anki:false},
+      ]},
+    ]
+  },
+  { id:'cardiology', title:'Cardiology', dur:'21h 09m',
+    sections:[{ items:[
+      {n:'1. Embryology',                           dur:'0:34', lec:true, anki:true},
+      {n:'2. Anatomy',                              dur:'0:35', lec:true, anki:true},
+      {n:'3. Vascular System',                      dur:'0:28', lec:true, anki:true},
+      {n:'4. Cardiac Parameters',                   dur:'0:46', lec:true, anki:true},
+      {n:'5. Cardiac Function & Venous Return',     dur:'0:36', lec:true, anki:true},
+      {n:'6. Pressure-Volume Loops',                dur:'0:35', lec:true, anki:true},
+      {n:'7. Vasodilation & Vasoconstriction',      dur:'0:38', lec:true, anki:true},
+      {n:'8. Pressure and Flow Physiology',         dur:'0:39', lec:true, anki:true},
+      {n:'9. Cardiac Cycle',                        dur:'0:50', lec:true, anki:true},
+      {n:'10. Renin-Angiotensin-Aldosterone System',dur:'0:54', lec:true, anki:true},
+      {n:'11. Exercise Physiology',                 dur:'0:28', lec:true, anki:true},
+      {n:'12. Cardiac Conductive Physiology',       dur:'0:46', lec:true, anki:true},
+      {n:'13. Antiarrhythmics',                     dur:'0:48', lec:true, anki:true},
+      {n:'14. Atrial Arrhythmias',                  dur:'0:43', lec:true, anki:true},
+      {n:'15. Ventricular Arrhythmias',             dur:'0:40', lec:true, anki:true},
+      {n:'16. Conduction Blocks',                   dur:'0:44', lec:true, anki:true},
+      {n:'17. Heart Failure',                       dur:'0:55', lec:true, anki:true},
+      {n:'18. Cardiomyopathy',                      dur:'0:55', lec:true, anki:true},
+      {n:'19. Aortic Disease',                      dur:'0:54', lec:true, anki:true},
+      {n:'20. Valvular Disease',                    dur:'1:04', lec:true, anki:true},
+      {n:'21. Acyanotic Congenital Heart Defects',  dur:'0:42', lec:true, anki:true},
+      {n:'22. Cyanotic Congenital Heart Defects',   dur:'0:45', lec:true, anki:true},
+      {n:'23. Stable Angina & Atherosclerosis',     dur:'0:51', lec:true, anki:true},
+      {n:'24. Myocardial Infarction',               dur:'1:09', lec:true, anki:true},
+      {n:'25. Peripheral Venous & Arterial Disease',dur:'0:37', lec:true, anki:true},
+      {n:'26. Hypertension',                        dur:'0:55', lec:true, anki:true},
+      {n:'27. Pericardial Disease',                 dur:'0:44', lec:true, anki:true},
+      {n:'28. Shock',                               dur:'0:41', lec:false, anki:false},
+    ]}]
+  },
+  { id:'gi', title:'Gastroenterology', dur:'31h 32m',
+    sections:[{ items:[
+      {n:'1. Embryology',      dur:'1:45', lec:true,  anki:true},
+      {n:'2. Oral Cavity',     dur:'2:01', lec:true,  anki:false},
+      {n:'3. Esophagus',       dur:'2:33', lec:true,  anki:false},
+      {n:'4. Stomach',         dur:'5:39', lec:true,  anki:false},
+      {n:'5. Liver',           dur:'5:28', lec:false, anki:false},
+      {n:'6. Biliary System',  dur:'3:55', lec:false, anki:false},
+      {n:'7. Pancreas',        dur:'2:03', lec:false, anki:false},
+      {n:'8. Small Intestine', dur:'3:48', lec:false, anki:false},
+      {n:'9. Large Intestine', dur:'3:41', lec:false, anki:false},
+      {n:'10. Hernias',        dur:'0:39', lec:false, anki:false},
+    ]}]
+  },
+  { id:'endo', title:'Endocrinology', dur:'10h 27m',
+    sections:[{ items:[
+      {n:'1. Fundamental Principles',          dur:'0:29', lec:true, anki:true},
+      {n:'2. Hypothalamus',                    dur:'1:33', lec:true, anki:true},
+      {n:'3. Anterior & Posterior Pituitary',  dur:'1:15', lec:true, anki:true},
+      {n:'4. Thyroid',                         dur:'1:51', lec:true, anki:true},
+      {n:'5. Parathyroids',                    dur:'0:56', lec:true, anki:true},
+      {n:'6. Adrenal Glands',                  dur:'2:31', lec:true, anki:true},
+      {n:'7. Pancreas',                        dur:'1:52', lec:true, anki:true},
+      {n:'8–10. (remaining)',                              lec:false, anki:false},
+    ]}]
+  },
+  { id:'repro', title:'Reproduction', dur:'10h 14m',
+    sections:[{ items:[
+      {n:'1. Fetal Development',       dur:'2:12', lec:true,  anki:true},
+      {n:'2. Pregnancy & Menstruation',dur:'1:44', lec:true,  anki:true},
+      {n:'3. Pathologies of Pregnancy',dur:'1:20', lec:true,  anki:true},
+      {n:'4. Female Pathology',        dur:'2:19', lec:true,  anki:true},
+      {n:'5. Male Pathology',          dur:'1:32', lec:true,  anki:true},
+      {n:'6. Pharmacology',            dur:'1:04', lec:false, anki:false},
+    ]}]
+  },
+  { id:'heme', title:'Hematology & Oncology', dur:'17h 09m',
+    sections:[{ items:[
+      {n:'1. Embryology',              dur:'0:49', lec:true, anki:true},
+      {n:'2. Blood Cells',             dur:'1:03', lec:true, anki:true},
+      {n:'3. Microcytic Anemia',       dur:'1:46', lec:true, anki:true},
+      {n:'4. Normocytic Anemia',       dur:'2:17', lec:true, anki:true},
+      {n:'5. Macrocytic Anemia',       dur:'0:53', lec:true, anki:true},
+      {n:'6. Platelets',               dur:'1:17', lec:true, anki:true},
+      {n:'7. Coagulation & Fibrinolysis',dur:'3:03',lec:true, anki:true},
+      {n:'8. Principles of Oncology',  dur:'2:27', lec:true, anki:true},
+      {n:'9. Leukemias & Lymphomas',   dur:'1:57', lec:true, anki:true},
+      {n:'10. Plasma Cell Dyscrasias', dur:'1:38', lec:true, anki:true},
+    ]}]
+  },
+  { id:'neuro', title:'Neurology', dur:'13h 57m',
+    sections:[{ items:[
+      {n:'1. Embryology',                              dur:'0:15', lec:true, anki:true},
+      {n:'2. Cellular Function',                       dur:'0:20', lec:true, anki:true},
+      {n:'3. Ascending Spinal Cord Tracts',            dur:'0:14', lec:true, anki:true},
+      {n:'4. Descending Spinal Cord Tracts',           dur:'0:25', lec:true, anki:true},
+      {n:'5. Brainstem Anatomy',                       dur:'0:18', lec:true, anki:true},
+      {n:'6. Cerebral Cortex',                         dur:'0:23', lec:true, anki:true},
+      {n:'7. Radiculopathy',                           dur:'0:16', lec:true, anki:true},
+      {n:'8. Spinal Cord Syndromes',                   dur:'0:24', lec:true, anki:true},
+      {n:'9. Invasive Spinal Cord Disease',            dur:'0:29', lec:true, anki:true},
+      {n:'10. Demyelinating Disease',                  dur:'0:29', lec:true, anki:true},
+      {n:'11. Conduction Physiology',                  dur:'0:23', lec:true, anki:true},
+      {n:'12. Neuromuscular Junction',                 dur:'0:32', lec:true, anki:true},
+      {n:'13. Cranial Nerves 1–6',                     dur:'0:33', lec:true, anki:true},
+      {n:'14. Cranial Nerves 7–12',                    dur:'0:28', lec:true, anki:true},
+      {n:'15. Vision',                                 dur:'0:28', lec:true, anki:true},
+      {n:'16. Auditory Sensation',                     dur:'0:25', lec:true, anki:true},
+      {n:'17. Vertigo',                                dur:'0:28', lec:true, anki:true},
+      {n:'18. Pediatric Brain Tumors',                 dur:'0:27', lec:true, anki:true},
+      {n:'19. Adult Primary Brain Tumors',             dur:'0:26', lec:true, anki:true},
+      {n:'20. Ischemic CVAs',                          dur:'0:44', lec:true, anki:true},
+      {n:'21. Aneurysms & Intracranial Hemorrhage',    dur:'0:31', lec:true, anki:true},
+      {n:'22. Cerebellum & Ventricles',                dur:'0:42', lec:true, anki:true},
+      {n:'23. Diencephalon',                           dur:'0:39', lec:true, anki:true},
+      {n:'24. Basal Ganglia',                          dur:'0:26', lec:true, anki:true},
+      {n:'25. Neurotransmitters in Psychiatric Disease',dur:'0:20',lec:true, anki:true},
+      {n:'26. Dementia',                               dur:'0:46', lec:true, anki:true},
+      {n:'27. Headache',                               dur:'0:32', lec:true, anki:true},
+      {n:'28. Seizures',                               dur:'0:43', lec:true, anki:true},
+      {n:'29. Traumatic Brain Injury',                 dur:'0:37', lec:true, anki:true},
+    ]}]
+  },
+  { id:'psych', title:'Psychiatry', dur:'6h 39m',
+    sections:[{ items:[
+      {n:'1. Psychology',                              dur:'0:27', lec:true,  anki:true},
+      {n:'2. Developmental Disorders',                 dur:'0:32', lec:true,  anki:true},
+      {n:'3. Memory, Dissociation & Orientation',      dur:'0:17', lec:true,  anki:true},
+      {n:'4. Anxiety, Trauma & Stress Disorders',      dur:'0:32', lec:true,  anki:true},
+      {n:'5. Personality Disorders',                   dur:'0:20', lec:true,  anki:true},
+      {n:'6. Psychotic & Mood Disorders',              dur:'0:50', lec:true,  anki:true},
+      {n:'7. Sleep & Psychosomatic Conditions',        dur:'0:43', lec:true,  anki:true},
+      {n:'8. Substance Misuse',                        dur:'1:21', lec:true,  anki:true},
+      {n:'9. Pharmacology',                            dur:'1:33', lec:false, anki:false},
+    ]}]
+  },
+  { id:'pulm', title:'Pulmonology', dur:'8h 31m',
+    sections:[{ items:[
+      {n:'1. Introduction to Respiratory System', dur:'0:26', lec:true, anki:true},
+      {n:'2. Air Physiology',                     dur:'1:38', lec:true, anki:true},
+      {n:'3. Blood Physiology',                   dur:'2:16', lec:true, anki:true},
+      {n:'4. Lung Pathology Fundamentals',        dur:'0:25', lec:true, anki:true},
+      {n:'5. Obstructive Lung Disease',           dur:'1:04', lec:true, anki:true},
+      {n:'6. Restrictive Lung Disease',           dur:'0:20', lec:true, anki:true},
+      {n:'7. Lung Cancer',                        dur:'0:25', lec:true, anki:true},
+      {n:'8. Lung Pathology Special Topics',      dur:'1:53', lec:true, anki:true},
+    ]}]
+  },
+  { id:'renal', title:'Nephrology', dur:'16h 52m',
+    sections:[{ items:[
+      {n:'1. Anatomy & Embryology',                    dur:'0:41', lec:true,  anki:true},
+      {n:'2. Fluid & Filtration Physiology',           dur:'1:14', lec:true,  anki:true},
+      {n:'3. Nephron Transporters',                    dur:'0:53', lec:true,  anki:true},
+      {n:'4. Renin-Angiotensin-Aldosterone System',    dur:'0:38', lec:true,  anki:true},
+      {n:'5. Electrolytes',                            dur:'1:25', lec:true,  anki:true},
+      {n:'6. Acid-Base Physiology',                    dur:'1:50', lec:true,  anki:true},
+      {n:'7. Pathology Diagnostics',                   dur:'0:40', lec:true,  anki:true},
+      {n:'8. Nephrotic Syndromes',                     dur:'1:00', lec:true,  anki:true},
+      {n:'9. Nephritic Syndromes',                     dur:'1:03', lec:false, anki:false},
+      {n:'10. Nephrolithiasis',                        dur:'0:59', lec:false, anki:false},
+      {n:'11. Urinary Incontinence',                   dur:'0:49', lec:false, anki:false},
+      {n:'12. Kidney Injury',                          dur:'2:16', lec:false, anki:false},
+      {n:'13. Inflammatory Conditions & Malignancy',   dur:'1:26', lec:false, anki:false},
+      {n:'14. Cystic Kidney Disease',                  dur:'0:30', lec:false, anki:false},
+      {n:'15. Renal Pharmacology',                     dur:'1:28', lec:false, anki:false},
+    ]}]
+  },
+];
+
+// ── PROGRESS ────────────────────────────────────────────────────────
+function calcSubject(subj) {
+  let total=0, done=0;
+  subj.sections.forEach((sec,si) => sec.items.forEach((item,idx) => {
+    ['lec','anki'].forEach(f => {
+      total++;
+      const v = getChk(subj.id, si, idx, f);
+      if ((v !== null ? v : item[f])) done++;
+    });
+  }));
+  return { pct: total ? Math.round(done/total*100) : 0, done, total };
+}
+function calcOverall() {
+  let total=0, done=0;
+  SUBJECTS.forEach(s => { const r=calcSubject(s); total+=r.total; done+=r.done; });
+  return { pct: total ? Math.round(done/total*100) : 0, done, total };
+}
+function refreshOverall() {
+  const r = calcOverall();
+  document.getElementById('overall-pct').textContent   = r.pct + '%';
+  document.getElementById('overall-bar').style.width   = r.pct + '%';
+  document.getElementById('overall-label').textContent = `${r.done} of ${r.total} items checked`;
+}
+
+// ── RENDER ───────────────────────────────────────────────────────────
+function buildAll() {
+  document.getElementById('subjects').innerHTML = SUBJECTS.map(subj => {
+    const r = calcSubject(subj);
+    const bodyHTML = subj.sections.map((sec, si) => {
+      const rows = sec.items.map((item, idx) => {
+        const lecOn  = getChk(subj.id, si, idx, 'lec')  ?? item.lec;
+        const ankiOn = getChk(subj.id, si, idx, 'anki') ?? item.anki;
+        const dur = item.dur ? `<span class="t-duration">${item.dur}</span>` : '';
+        return `<div class="t-item">
+          <span class="t-name">${item.n}</span>${dur}
+          <div class="check-grp">
+            <div class="check-col"><span class="check-lbl">Lec</span>
+              <div class="chk${lecOn?' on':''}" onclick="tog('${subj.id}',${si},${idx},'lec',this)"></div></div>
+            <div class="check-col"><span class="check-lbl">Anki</span>
+              <div class="chk${ankiOn?' on':''}" onclick="tog('${subj.id}',${si},${idx},'anki',this)"></div></div>
+          </div></div>`;
+      }).join('');
+      const secTitle = sec.title ? `<div class="sub-section-title">${sec.title}</div>` : '';
+      return `<div class="sub-section">${secTitle}${rows}</div>`;
+    }).join('');
+
+    return `<div class="subject-block" id="sb-${subj.id}">
+      <div class="subject-header" onclick="toggle('${subj.id}')">
+        <span class="subject-title">${subj.title}</span>
+        <div class="subject-meta">
+          <span class="subject-dur">⏱ ${subj.dur}</span>
+          <div class="subj-bar-wrap"><div class="subj-bar-fill" id="bar-${subj.id}" style="width:${r.pct}%"></div></div>
+          <span class="subject-pct" id="pct-${subj.id}">${r.pct}%</span>
+          <span class="subject-chevron">▼</span>
+        </div>
+      </div>
+      <div class="subject-body">${bodyHTML}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggle(id) { document.getElementById('sb-'+id).classList.toggle('open'); }
+
+function tog(sid, si, idx, f, el) {
+  const on = !el.classList.contains('on');
+  el.classList.toggle('on', on);
+  setChk(sid, si, idx, f, on);
+  const subj = SUBJECTS.find(s => s.id === sid);
+  if (subj) {
+    const r = calcSubject(subj);
+    document.getElementById('pct-'+sid).textContent = r.pct + '%';
+    document.getElementById('bar-'+sid).style.width = r.pct + '%';
+  }
+  refreshOverall();
+}
+
+buildAll();
+refreshOverall();
+</script>
+</body></html>

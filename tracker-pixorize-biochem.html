@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Pixorize Biochemistry — Step 1</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="index.html">Step 1 Study Hub 🌿</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="tracker-sketchy-micro.html">Sketchy Micro</a></li>
+    <li><a href="tracker-sketchy-pharm.html">Sketchy Pharm</a></li>
+    <li><a href="tracker-bootcamp.html">Bootcamp</a></li>
+    <li><a href="tracker-pixorize-immuno.html">Pixorize Immuno</a></li>
+    <li><a href="tracker-pixorize-biochem.html" class="active">Pixorize Biochem</a></li>
+  </ul>
+</nav>
+<div class="tracker-page">
+  <a class="back-link" href="index.html">← Back to Hub</a>
+  <div class="tracker-page-header">
+    <h1>🧬 Pixorize <em>Biochemistry</em></h1>
+    <p>Vitamins · Minerals · Pathways · Enzyme Disorders — click any subject to expand.</p>
+  </div>
+  <div class="progress-header">
+    <div>
+      <div class="prog-big-num" id="overall-pct">0%</div>
+      <div class="prog-big-label">overall complete</div>
+    </div>
+    <div class="prog-bar-full">
+      <div class="prog-bar-full-wrap"><div class="prog-bar-full-fill" id="overall-bar" style="width:0%"></div></div>
+      <div class="prog-bar-full-label" id="overall-label">0 of 0 items checked</div>
+    </div>
+  </div>
+  <div id="subjects"></div>
+</div>
+<footer>Step 1 Study Hub · 🌿</footer>
+<script>
+const KEY='pix_biochem_state';
+function gs(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return{}}}
+function ss(s){localStorage.setItem(KEY,JSON.stringify(s))}
+function getChk(sid,si,idx,f){const v=gs()[`${sid}_${si}_${idx}_${f}`];return v??null}
+function setChk(sid,si,idx,f,v){const s=gs();s[`${sid}_${si}_${idx}_${f}`]=v;ss(s)}
+
+const SUBJECTS=[
+  {id:'b_vitamins',title:'B Vitamins',dur:'~1h',sections:[{items:[
+    {n:'Vitamin B1 (Thiamine) — Biochemistry',          lec:false, anki:false},
+    {n:'Vitamin B1 — Deficiency (Beriberi, Wernicke)',  lec:false, anki:false},
+    {n:'Vitamin B2 (Riboflavin)',                       lec:false, anki:false},
+    {n:'Vitamin B3 (Niacin) — Biochemistry',            lec:false, anki:false},
+    {n:'Vitamin B3 — Deficiency (Pellagra) & Excess',   lec:false, anki:false},
+    {n:'Hartnup Disease',                               lec:false, anki:false},
+    {n:'Vitamin B5 (Pantothenic Acid)',                  lec:false, anki:false},
+    {n:'Vitamin B6 (Pyridoxine)',                        lec:false, anki:false},
+    {n:'Vitamin B7 (Biotin)',                            lec:false, anki:false},
+    {n:'Vitamin B9 (Folate)',                            lec:false, anki:false},
+    {n:'Vitamin B12 — Biochemistry',                    lec:false, anki:false},
+    {n:'Vitamins B9 & B12 — Deficiencies',              lec:false, anki:false},
+  ]}]},
+  {id:'fat_vitamins',title:'Fat-Soluble Vitamins & Vitamin C',dur:'~45m',sections:[{items:[
+    {n:'Vitamin A — Biochemistry',               lec:false, anki:false},
+    {n:'Vitamin A — Deficiency & Excess',         lec:false, anki:false},
+    {n:'Vitamin C — Biochemistry',               lec:false, anki:false},
+    {n:'Vitamin C — Deficiency (Scurvy) & Excess',lec:false, anki:false},
+    {n:'Vitamin D — Biochemistry',               lec:false, anki:false},
+    {n:'Vitamin D — Deficiency & Excess',         lec:false, anki:false},
+    {n:'Vitamin E (Tocopherol)',                  lec:false, anki:false},
+    {n:'Vitamin K — Biochemistry',               lec:false, anki:false},
+    {n:'Vitamin K — Deficiency',                  lec:false, anki:false},
+  ]}]},
+  {id:'minerals',title:'Minerals & Nutrition',dur:'~20m',sections:[{items:[
+    {n:'Zinc',                         lec:false, anki:false},
+    {n:'Kwashiorkor & Marasmus',        lec:false, anki:false},
+    {n:'Iron Metabolism',              lec:false, anki:false},
+    {n:'Copper (Wilson\'s & Menkes)',   lec:false, anki:false},
+  ]}]},
+  {id:'energy',title:'Energy Pathways',dur:'~1.5h',sections:[
+    {title:'Carbohydrate Metabolism',items:[
+      {n:'Glycolysis',                                           lec:false, anki:false},
+      {n:'Pyruvate Metabolism',                                  lec:false, anki:false},
+      {n:'Citric Acid Cycle (TCA)',                              lec:false, anki:false},
+      {n:'Electron Transport Chain & Oxidative Phosphorylation', lec:false, anki:false},
+      {n:'Gluconeogenesis',                                      lec:false, anki:false},
+      {n:'Glycogen Synthesis & Degradation',                     lec:false, anki:false},
+      {n:'HMP Shunt (Pentose Phosphate Pathway)',                lec:false, anki:false},
+      {n:'Fructose & Galactose Metabolism',                      lec:false, anki:false},
+    ]},
+    {title:'Lipid Metabolism',items:[
+      {n:'Fatty Acid Synthesis',             lec:false, anki:false},
+      {n:'Fatty Acid Oxidation (Beta-ox.)',   lec:false, anki:false},
+      {n:'Ketogenesis',                      lec:false, anki:false},
+      {n:'Cholesterol Synthesis',            lec:false, anki:false},
+    ]},
+    {title:'Amino Acid & Nitrogen',items:[
+      {n:'Amino Acid Metabolism',        lec:false, anki:false},
+      {n:'Urea Cycle',                   lec:false, anki:false},
+      {n:'Purine & Pyrimidine Synthesis', lec:false, anki:false},
+    ]},
+  ]},
+  {id:'enzyme',title:'Enzyme Disorders',dur:'~1h',sections:[
+    {title:'Lysosomal Storage Diseases',items:[
+      {n:'Gaucher Disease',                        lec:false, anki:false},
+      {n:'Niemann-Pick Disease',                   lec:false, anki:false},
+      {n:'Tay-Sachs Disease',                      lec:false, anki:false},
+      {n:'Fabry Disease',                          lec:false, anki:false},
+      {n:'Krabbe Disease',                         lec:false, anki:false},
+      {n:'Metachromatic Leukodystrophy',           lec:false, anki:false},
+      {n:'Mucopolysaccharidoses (Hurler, Hunter)', lec:false, anki:false},
+    ]},
+    {title:'Glycogen Storage Diseases',items:[
+      {n:'Von Gierke (Type Ia)',  lec:false, anki:false},
+      {n:'Pompe (Type II)',       lec:false, anki:false},
+      {n:'Cori (Type III)',       lec:false, anki:false},
+      {n:'McArdle (Type V)',      lec:false, anki:false},
+    ]},
+    {title:'Amino Acid Disorders',items:[
+      {n:'Phenylketonuria (PKU)',      lec:false, anki:false},
+      {n:'Alkaptonuria',              lec:false, anki:false},
+      {n:'Homocystinuria',            lec:false, anki:false},
+      {n:'Maple Syrup Urine Disease', lec:false, anki:false},
+    ]},
+  ]},
+];
+
+function calcSubject(subj){let total=0,done=0;subj.sections.forEach((sec,si)=>sec.items.forEach((item,idx)=>{['lec','anki'].forEach(f=>{total++;const v=getChk(subj.id,si,idx,f);if((v!==null?v:item[f]))done++;})}));return{pct:total?Math.round(done/total*100):0,done,total};}
+function calcOverall(){let total=0,done=0;SUBJECTS.forEach(s=>{const r=calcSubject(s);total+=r.total;done+=r.done;});return{pct:total?Math.round(done/total*100):0,done,total};}
+function refreshOverall(){const r=calcOverall();document.getElementById('overall-pct').textContent=r.pct+'%';document.getElementById('overall-bar').style.width=r.pct+'%';document.getElementById('overall-label').textContent=`${r.done} of ${r.total} items checked`;}
+function buildAll(){document.getElementById('subjects').innerHTML=SUBJECTS.map(subj=>{const r=calcSubject(subj);const body=subj.sections.map((sec,si)=>{const rows=sec.items.map((item,idx)=>{const lecOn=getChk(subj.id,si,idx,'lec')??item.lec;const ankiOn=getChk(subj.id,si,idx,'anki')??item.anki;return`<div class="t-item"><span class="t-name">${item.n}</span><div class="check-grp"><div class="check-col"><span class="check-lbl">Lec</span><div class="chk${lecOn?' on':''}" onclick="tog('${subj.id}',${si},${idx},'lec',this)"></div></div><div class="check-col"><span class="check-lbl">Anki</span><div class="chk${ankiOn?' on':''}" onclick="tog('${subj.id}',${si},${idx},'anki',this)"></div></div></div></div>`;}).join('');const t=sec.title?`<div class="sub-section-title">${sec.title}</div>`:'';return`<div class="sub-section">${t}${rows}</div>`;}).join('');return`<div class="subject-block" id="sb-${subj.id}"><div class="subject-header" onclick="toggle('${subj.id}')"><span class="subject-title">${subj.title}</span><div class="subject-meta"><span class="subject-dur">⏱ ${subj.dur}</span><div class="subj-bar-wrap"><div class="subj-bar-fill" id="bar-${subj.id}" style="width:${r.pct}%"></div></div><span class="subject-pct" id="pct-${subj.id}">${r.pct}%</span><span class="subject-chevron">▼</span></div></div><div class="subject-body">${body}</div></div>`;}).join('');}
+function toggle(id){document.getElementById('sb-'+id).classList.toggle('open')}
+function tog(sid,si,idx,f,el){const on=!el.classList.contains('on');el.classList.toggle('on',on);setChk(sid,si,idx,f,on);const subj=SUBJECTS.find(s=>s.id===sid);if(subj){const r=calcSubject(subj);document.getElementById('pct-'+sid).textContent=r.pct+'%';document.getElementById('bar-'+sid).style.width=r.pct+'%';}refreshOverall();}
+buildAll();refreshOverall();
+</script>
+</body></html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Sketchy Micro — Step 1</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="index.html">Step 1 Study Hub 🌿</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="tracker-sketchy-micro.html" class="active">Sketchy Micro</a></li>
+    <li><a href="tracker-sketchy-pharm.html">Sketchy Pharm</a></li>
+    <li><a href="tracker-bootcamp.html">Bootcamp</a></li>
+    <li><a href="tracker-pixorize-immuno.html">Pixorize Immuno</a></li>
+    <li><a href="tracker-pixorize-biochem.html">Pixorize Biochem</a></li>
+  </ul>
+</nav>
+<div class="tracker-page">
+  <a class="back-link" href="index.html">← Back to Hub</a>
+  <div class="tracker-page-header">
+    <h1>🦠 Sketchy <em>Micro</em></h1>
+    <p>Bacteria · Viruses · Parasites · Fungi — scroll through all, click any subject to expand.</p>
+  </div>
+  <div class="progress-header">
+    <div>
+      <div class="prog-big-num" id="overall-pct">0%</div>
+      <div class="prog-big-label">overall complete</div>
+    </div>
+    <div class="prog-bar-full">
+      <div class="prog-bar-full-wrap"><div class="prog-bar-full-fill" id="overall-bar" style="width:0%"></div></div>
+      <div class="prog-bar-full-label" id="overall-label">0 of 0 items checked</div>
+    </div>
+  </div>
+  <div id="subjects"></div>
+</div>
+<footer>Step 1 Study Hub · 🌿</footer>
+<script>
+const KEY = 'sk_micro_state';
+function gs(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return{}}}
+function ss(s){localStorage.setItem(KEY,JSON.stringify(s))}
+function getChk(sid,si,idx,f){const v=gs()[`${sid}_${si}_${idx}_${f}`];return v??null}
+function setChk(sid,si,idx,f,v){const s=gs();s[`${sid}_${si}_${idx}_${f}`]=v;ss(s)}
+
+const SUBJECTS = [
+  { id:'bacteria', title:'Bacteria', dur:'~4h',
+    sections:[
+      { title:'Gram-Positive Cocci', items:[
+        {n:'Staphylococcus Aureus',                      lec:true, anki:true},
+        {n:'Staphylococcus Epidermidis & Saprophyticus', lec:true, anki:true},
+        {n:'Streptococcus Pyogenes',                     lec:true, anki:true},
+        {n:'Streptococcus Agalactiae',                   lec:true, anki:true},
+        {n:'Streptococcus Pneumoniae & Viridans',        lec:true, anki:true},
+        {n:'Enterococcus Fecium & Fecalis',              lec:true, anki:true},
+        {n:'Streptococcus Gallolyticus',                 lec:true, anki:true},
+      ]},
+      { title:'Gram-Positive Bacilli & Filamentous', items:[
+        {n:'Bacillus anthracis & cereus',                lec:true, anki:true},
+        {n:'Clostridium tetani',                         lec:true, anki:true},
+        {n:'Clostridium botulinum',                      lec:true, anki:true},
+        {n:'Clostridium perfringens',                    lec:true, anki:true},
+        {n:'Clostridium difficile',                      lec:true, anki:true},
+        {n:'Corynebacterium diptheriae',                 lec:true, anki:true},
+        {n:'Listeria monocytogenes',                     lec:true, anki:true},
+        {n:'Actinomyces israelii',                       lec:true, anki:true},
+        {n:'Nocardia asteroides',                        lec:true, anki:true},
+      ]},
+      { title:'Gram-Negative Cocci', items:[
+        {n:'Neisseria: Overview',         lec:true, anki:true},
+        {n:'Neisseria meningitidis',      lec:true, anki:true},
+        {n:'Neisseria gonorrhea',         lec:true, anki:true},
+        {n:'Moraxella catarrhalis',       lec:true, anki:true},
+      ]},
+      { title:'Gram-Negative Bacilli — Enteric', items:[
+        {n:'Klebsiella, Enterobacter, Serratia',  lec:false, anki:true},
+        {n:'Salmonella: Introduction & NTS',      lec:true,  anki:true},
+        {n:'Salmonella: Typhoidal',               lec:false, anki:true},
+        {n:'Shigella spp.',                       lec:true,  anki:true},
+        {n:'Yersinia enterocolitica & pestis',    lec:true,  anki:true},
+        {n:'Vibrio cholerae',                     lec:true,  anki:true},
+        {n:'Helicobacter pylori',                 lec:true,  anki:true},
+        {n:'Campylobacter jejuni',                lec:true,  anki:true},
+        {n:'E. coli',                             lec:true,  anki:true},
+      ]},
+      { title:'Gram-Negative Bacilli — Respiratory & Zoonotic', items:[
+        {n:'Haemophilus influenzae',      lec:true, anki:true},
+        {n:'Bordetella pertussis',        lec:true, anki:true},
+        {n:'Legionella pneumophila',      lec:true, anki:true},
+        {n:'Francisella tularensis',      lec:true, anki:true},
+        {n:'Brucella spp.',               lec:true, anki:true},
+        {n:'Pasteurella multocida',       lec:true, anki:true},
+        {n:'Bartonella henselae',         lec:true, anki:true},
+      ]},
+      { title:'Spirochetes & Atypicals', items:[
+        {n:'Treponema pallidum',          lec:true, anki:true},
+        {n:'Borrelia burgdorferi',        lec:true, anki:true},
+        {n:'Leptospira interrogans',      lec:true, anki:true},
+        {n:'Rickettsia',                  lec:true, anki:true},
+        {n:'Chlamydia',                   lec:true, anki:true},
+        {n:'Mycoplasma pneumoniae',       lec:true, anki:true},
+      ]},
+    ]
+  },
+  { id:'viruses', title:'Viruses', dur:'~3.5h',
+    sections:[
+      { title:'RNA Positive-Sense', items:[
+        {n:'Picornaviridae overview',       lec:true,  anki:true},
+        {n:'Poliovirus',                    lec:true,  anki:true},
+        {n:'Coxsackievirus A & B',          lec:true,  anki:true},
+        {n:'Rhinovirus',                    lec:true,  anki:true},
+        {n:'Hepatitis A virus',             lec:true,  anki:true},
+        {n:'Norovirus / Norwalk virus',     lec:true,  anki:true},
+        {n:'Flaviviridae overview',         lec:true,  anki:true},
+        {n:'Hepatitis C Virus',             lec:true,  anki:true},
+        {n:'HIV Overview: Part 1',          lec:false, anki:true},
+        {n:'HIV Life Cycle: Part 2',        lec:false, anki:true},
+        {n:'Rubella virus',                 lec:true,  anki:true},
+        {n:'Coronavirus',                   lec:true,  anki:true},
+      ]},
+      { title:'RNA Negative-Sense', items:[
+        {n:'Influenzavirus (Orthomyxoviridae)', lec:true,  anki:true},
+        {n:'Measles, Mumps, Parainfluenza',    lec:true,  anki:true},
+        {n:'Rabies virus',                     lec:true,  anki:true},
+        {n:'Ebolavirus, Marburgvirus',         lec:true,  anki:true},
+        {n:'Hantavirus (Bunyaviridae)',         lec:true,  anki:true},
+        {n:'LCM virus (Arenaviridae)',          lec:true,  anki:true},
+        {n:'Rotavirus, Colorado tick fever',   lec:true,  anki:true},
+        {n:'RSV & Human Metapneumovirus',       lec:false, anki:true},
+      ]},
+      { title:'DNA Viruses', items:[
+        {n:'HSV-1 and HSV-2',             lec:true, anki:true},
+        {n:'Epstein-Barr Virus',          lec:true, anki:true},
+        {n:'Cytomegalovirus',             lec:true, anki:true},
+        {n:'Varicella-Zoster Virus',      lec:true, anki:true},
+        {n:'HHV-8 (Kaposi Sarcoma)',      lec:true, anki:true},
+        {n:'Adenovirus',                  lec:true, anki:true},
+        {n:'Hepatitis B Virus',           lec:true, anki:true},
+        {n:'Parvovirus B19',              lec:true, anki:true},
+        {n:'HPV',                         lec:true, anki:true},
+        {n:'Polyomavirus (BK, JC)',        lec:true, anki:true},
+        {n:'Poxvirus',                    lec:true, anki:true},
+      ]},
+    ]
+  },
+  { id:'parasites', title:'Parasites', dur:'~1.5h',
+    sections:[
+      { title:'Protozoa', items:[
+        {n:'Giardia lamblia',                          lec:true,  anki:false},
+        {n:'Entamoeba histolytica',                    lec:true,  anki:false},
+        {n:'Cryptosporidium spp.',                     lec:true,  anki:false},
+        {n:'Toxoplasma gondii',                        lec:true,  anki:false},
+        {n:'Trypanosoma brucei',                       lec:true,  anki:false},
+        {n:'Naegleria fowleri',                        lec:false, anki:false},
+        {n:'Trypanosoma cruzi (Chagas)',               lec:true,  anki:false},
+        {n:'Babesia spp.',                             lec:true,  anki:false},
+        {n:'Plasmodium Part 1',                        lec:false, anki:false},
+        {n:'Plasmodium Part 2',                        lec:false, anki:false},
+        {n:'Leishmania braziliensis & donovani',       lec:true,  anki:false},
+        {n:'Trichomonas vaginalis',                    lec:true,  anki:true},
+      ]},
+      { title:'Helminths', items:[
+        {n:'Intestinal nematodes',  lec:true,  anki:false},
+        {n:'Tissue nematodes',      lec:true,  anki:false},
+        {n:'Cestodes',              lec:true,  anki:false},
+        {n:'Trematodes',            lec:true,  anki:false},
+      ]},
+    ]
+  },
+  { id:'fungi', title:'Fungi', dur:'~1h',
+    sections:[
+      { title:'Systemic & Cutaneous', items:[
+        {n:'Histoplasma capsulatum',          lec:true, anki:true},
+        {n:'Blastomyces dermatitidis',        lec:true, anki:true},
+        {n:'Coccidioides immitis',            lec:true, anki:true},
+        {n:'Paracoccidioides brasiliensis',   lec:true, anki:false},
+        {n:'Malassezia furfur',               lec:true, anki:false},
+        {n:'Dermatophytes',                   lec:true, anki:false},
+        {n:'Sporothrix schenckii',            lec:true, anki:false},
+      ]},
+      { title:'Opportunistic', items:[
+        {n:'Candida albicans',         lec:true, anki:true},
+        {n:'Aspergillus fumigatus',    lec:true, anki:true},
+        {n:'Cryptococcus neoformans',  lec:true, anki:true},
+        {n:'Mucor spp., Rhizopus spp.',lec:true, anki:true},
+        {n:'Pneumocystis jiroveci',    lec:true, anki:false},
+      ]},
+    ]
+  },
+];
+
+function calcSubject(subj){
+  let total=0,done=0;
+  subj.sections.forEach((sec,si)=>sec.items.forEach((item,idx)=>{
+    ['lec','anki'].forEach(f=>{total++;const v=getChk(subj.id,si,idx,f);if((v!==null?v:item[f]))done++;});
+  }));
+  return{pct:total?Math.round(done/total*100):0,done,total};
+}
+function calcOverall(){
+  let total=0,done=0;
+  SUBJECTS.forEach(s=>{const r=calcSubject(s);total+=r.total;done+=r.done;});
+  return{pct:total?Math.round(done/total*100):0,done,total};
+}
+function refreshOverall(){
+  const r=calcOverall();
+  document.getElementById('overall-pct').textContent=r.pct+'%';
+  document.getElementById('overall-bar').style.width=r.pct+'%';
+  document.getElementById('overall-label').textContent=`${r.done} of ${r.total} items checked`;
+}
+function buildAll(){
+  document.getElementById('subjects').innerHTML=SUBJECTS.map(subj=>{
+    const r=calcSubject(subj);
+    const body=subj.sections.map((sec,si)=>{
+      const rows=sec.items.map((item,idx)=>{
+        const lecOn=getChk(subj.id,si,idx,'lec')??item.lec;
+        const ankiOn=getChk(subj.id,si,idx,'anki')??item.anki;
+        return`<div class="t-item"><span class="t-name">${item.n}</span>
+          <div class="check-grp">
+            <div class="check-col"><span class="check-lbl">Lec</span>
+              <div class="chk${lecOn?' on':''}" onclick="tog('${subj.id}',${si},${idx},'lec',this)"></div></div>
+            <div class="check-col"><span class="check-lbl">Anki</span>
+              <div class="chk${ankiOn?' on':''}" onclick="tog('${subj.id}',${si},${idx},'anki',this)"></div></div>
+          </div></div>`;
+      }).join('');
+      const t=sec.title?`<div class="sub-section-title">${sec.title}</div>`:'';
+      return`<div class="sub-section">${t}${rows}</div>`;
+    }).join('');
+    return`<div class="subject-block" id="sb-${subj.id}">
+      <div class="subject-header" onclick="toggle('${subj.id}')">
+        <span class="subject-title">${subj.title}</span>
+        <div class="subject-meta">
+          <span class="subject-dur">⏱ ${subj.dur}</span>
+          <div class="subj-bar-wrap"><div class="subj-bar-fill" id="bar-${subj.id}" style="width:${r.pct}%"></div></div>
+          <span class="subject-pct" id="pct-${subj.id}">${r.pct}%</span>
+          <span class="subject-chevron">▼</span>
+        </div>
+      </div>
+      <div class="subject-body">${body}</div>
+    </div>`;
+  }).join('');
+}
+function toggle(id){document.getElementById('sb-'+id).classList.toggle('open')}
+function tog(sid,si,idx,f,el){
+  const on=!el.classList.contains('on');el.classList.toggle('on',on);setChk(sid,si,idx,f,on);
+  const subj=SUBJECTS.find(s=>s.id===sid);if(subj){const r=calcSubject(subj);
+    document.getElementById('pct-'+sid).textContent=r.pct+'%';
+    document.getElementById('bar-'+sid).style.width=r.pct+'%';}
+  refreshOverall();
+}
+buildAll();refreshOverall();
+</script>
+</body></html>
