@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Sketchy Pharm — Step 1</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="index.html">Step 1 Study Hub 🌿</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="tracker-sketchy-micro.html">Sketchy Micro</a></li>
+    <li><a href="tracker-sketchy-pharm.html" class="active">Sketchy Pharm</a></li>
+    <li><a href="tracker-bootcamp.html">Bootcamp</a></li>
+    <li><a href="tracker-pixorize-immuno.html">Pixorize Immuno</a></li>
+    <li><a href="tracker-pixorize-biochem.html">Pixorize Biochem</a></li>
+  </ul>
+</nav>
+<div class="tracker-page">
+  <a class="back-link" href="index.html">← Back to Hub</a>
+  <div class="tracker-page-header">
+    <h1>💉 Sketchy <em>Pharm</em></h1>
+    <p>All drug classes by system — scroll through, click any subject to expand.</p>
+  </div>
+  <div class="progress-header">
+    <div>
+      <div class="prog-big-num" id="overall-pct">0%</div>
+      <div class="prog-big-label">overall complete</div>
+    </div>
+    <div class="prog-bar-full">
+      <div class="prog-bar-full-wrap"><div class="prog-bar-full-fill" id="overall-bar" style="width:0%"></div></div>
+      <div class="prog-bar-full-label" id="overall-label">0 of 0 items checked</div>
+    </div>
+  </div>
+  <div id="subjects"></div>
+</div>
+<footer>Step 1 Study Hub · 🌿</footer>
+<script>
+const KEY='sk_pharm_state';
+function gs(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return{}}}
+function ss(s){localStorage.setItem(KEY,JSON.stringify(s))}
+function getChk(sid,si,idx,f){const v=gs()[`${sid}_${si}_${idx}_${f}`];return v??null}
+function setChk(sid,si,idx,f,v){const s=gs();s[`${sid}_${si}_${idx}_${f}`]=v;ss(s)}
+
+const SUBJECTS=[
+  {id:'antimicro',title:'Antimicrobials',dur:'~4h',sections:[
+    {title:'Cell Wall & Membrane',items:[
+      {n:'Penicillin',                                lec:true, anki:true},
+      {n:'Nafcillin, Oxacillin, Dicloxacillin',       lec:true, anki:true},
+      {n:'Ampicillin, Amoxicillin, Piperacillin',     lec:true, anki:true},
+      {n:'Cephalosporins',                            lec:true, anki:true},
+      {n:'Monobactams & Carbapenems',                 lec:true, anki:true},
+      {n:'Vancomycin',                                lec:true, anki:true},
+      {n:'Daptomycin',                                lec:true, anki:true},
+    ]},
+    {title:'Protein Synthesis Inhibitors',items:[
+      {n:'Tetracyclines',       lec:true, anki:true},
+      {n:'Macrolides',          lec:true, anki:true},
+      {n:'Clindamycin',         lec:true, anki:true},
+      {n:'Chloramphenicol',     lec:true, anki:true},
+      {n:'Linezolid',           lec:true, anki:true},
+      {n:'Aminoglycosides',     lec:true, anki:true},
+    ]},
+    {title:'Antimycobacterials & Other',items:[
+      {n:'Tuberculosis Drugs',                    lec:true, anki:true},
+      {n:'Leprosy Drugs',                         lec:true, anki:true},
+      {n:'Trimethoprim / Sulfamethoxazole',        lec:true, anki:true},
+      {n:'Fluoroquinolones',                      lec:true, anki:true},
+      {n:'Metronidazole',                         lec:true, anki:true},
+    ]},
+    {title:'Antifungals',items:[
+      {n:'Amphotericin B, Flucytosine',               lec:true, anki:true},
+      {n:'Azoles',                                    lec:true, anki:true},
+      {n:'Griseofulvin, Terbinafine, Echinocandins',  lec:true, anki:true},
+    ]},
+    {title:'Antivirals',items:[
+      {n:'NRTIs',                                    lec:false, anki:false},
+      {n:'NNRTIs',                                   lec:false, anki:false},
+      {n:'Protease Inhibitors',                      lec:false, anki:false},
+      {n:'Maraviroc, Fusion / Integrase Inhibitors', lec:false, anki:false},
+      {n:'Acyclovir, Valacyclovir, Famciclovir',     lec:false, anki:false},
+      {n:'Hepatitis C: Direct-Acting Antivirals',    lec:false, anki:false},
+    ]},
+  ]},
+  {id:'autonomic',title:'Autonomic',dur:'~1.5h',sections:[
+    {title:'Parasympathetics',items:[
+      {n:'Cholinomimetics / Muscarinic Agonists',      lec:false, anki:false},
+      {n:'Anticholinergics (Muscarinic Antagonists)',  lec:false, anki:false},
+      {n:'Acetylcholinesterase Inhibitors',            lec:false, anki:false},
+    ]},
+    {title:'Sympathetics',items:[
+      {n:'Adrenergic Agonists', lec:false, anki:false},
+      {n:'Alpha Blockers',      lec:false, anki:false},
+      {n:'Beta Blockers',       lec:false, anki:false},
+    ]},
+  ]},
+  {id:'cardio',title:'Cardiovascular',dur:'~2h',sections:[
+    {title:'Heart Failure & Diuretics',items:[
+      {n:'Heart Failure Drugs',                  lec:false, anki:false},
+      {n:'Loop, Thiazide, K-sparing Diuretics',  lec:false, anki:false},
+    ]},
+    {title:'Antihypertensives & Antiarrhythmics',items:[
+      {n:'ACE Inhibitors / ARBs',        lec:false, anki:false},
+      {n:'Calcium Channel Blockers',     lec:false, anki:false},
+      {n:'Class I–IV Antiarrhythmics',   lec:false, anki:false},
+    ]},
+    {title:'Anticoagulation & Lipids',items:[
+      {n:'Heparin, Warfarin, DOACs',               lec:false, anki:false},
+      {n:'Thrombolytics',                          lec:false, anki:false},
+      {n:'Statins, Fibrates, Niacin, Ezetimibe',   lec:false, anki:false},
+      {n:'Vasoactive / Smooth Muscle Drugs',       lec:false, anki:false},
+    ]},
+  ]},
+  {id:'gi_endo',title:'GI & Endocrine',dur:'~2h',sections:[
+    {title:'GI',items:[
+      {n:'GI Drugs',    lec:false, anki:false},
+      {n:'Antiemetics', lec:false, anki:false},
+    ]},
+    {title:'Endocrine',items:[
+      {n:'Insulin & Oral Hypoglycemics',          lec:false, anki:false},
+      {n:'Thyroid, Parathyroid, Adrenal Drugs',   lec:false, anki:false},
+      {n:'Reproductive & Endocrine Drugs',        lec:false, anki:false},
+    ]},
+  ]},
+  {id:'neuro_psych',title:'Neuro & Psych',dur:'~2h',sections:[
+    {title:'Neurology & Anesthesia',items:[
+      {n:'Neuro Drugs',                    lec:false, anki:false},
+      {n:'Sedatives, Hypnotics, Analgesics',lec:false, anki:false},
+    ]},
+    {title:'Psychiatry',items:[
+      {n:'Antidepressants & Anxiolytics',      lec:false, anki:false},
+      {n:'Mood Stabilizers & Antiepileptics',  lec:false, anki:false},
+      {n:'Antipsychotics & Parkinson Drugs',   lec:false, anki:false},
+    ]},
+    {title:'Anti-inflammatory & Pulmonary',items:[
+      {n:'NSAIDs, Steroids, DMARDs',    lec:false, anki:false},
+      {n:'Allergy & Pulmonary Drugs',   lec:false, anki:false},
+    ]},
+  ]},
+  {id:'onco',title:'Oncology',dur:'~1h',sections:[{items:[
+    {n:'Sketchy Antineoplastics',                    lec:true,  anki:true},
+    {n:'Antimetabolites',                            lec:false, anki:false},
+    {n:'DNA & Cellular Division Drugs',              lec:false, anki:false},
+    {n:'Kinase Inhibitors & Monoclonal Antibodies',  lec:false, anki:false},
+  ]}]},
+];
+
+function calcSubject(subj){
+  let total=0,done=0;
+  subj.sections.forEach((sec,si)=>sec.items.forEach((item,idx)=>{
+    ['lec','anki'].forEach(f=>{total++;const v=getChk(subj.id,si,idx,f);if((v!==null?v:item[f]))done++;});
+  }));
+  return{pct:total?Math.round(done/total*100):0,done,total};
+}
+function calcOverall(){let total=0,done=0;SUBJECTS.forEach(s=>{const r=calcSubject(s);total+=r.total;done+=r.done;});return{pct:total?Math.round(done/total*100):0,done,total};}
+function refreshOverall(){const r=calcOverall();document.getElementById('overall-pct').textContent=r.pct+'%';document.getElementById('overall-bar').style.width=r.pct+'%';document.getElementById('overall-label').textContent=`${r.done} of ${r.total} items checked`;}
+function buildAll(){
+  document.getElementById('subjects').innerHTML=SUBJECTS.map(subj=>{
+    const r=calcSubject(subj);
+    const body=subj.sections.map((sec,si)=>{
+      const rows=sec.items.map((item,idx)=>{
+        const lecOn=getChk(subj.id,si,idx,'lec')??item.lec;
+        const ankiOn=getChk(subj.id,si,idx,'anki')??item.anki;
+        return`<div class="t-item"><span class="t-name">${item.n}</span>
+          <div class="check-grp">
+            <div class="check-col"><span class="check-lbl">Lec</span><div class="chk${lecOn?' on':''}" onclick="tog('${subj.id}',${si},${idx},'lec',this)"></div></div>
+            <div class="check-col"><span class="check-lbl">Anki</span><div class="chk${ankiOn?' on':''}" onclick="tog('${subj.id}',${si},${idx},'anki',this)"></div></div>
+          </div></div>`;
+      }).join('');
+      const t=sec.title?`<div class="sub-section-title">${sec.title}</div>`:'';
+      return`<div class="sub-section">${t}${rows}</div>`;
+    }).join('');
+    return`<div class="subject-block" id="sb-${subj.id}">
+      <div class="subject-header" onclick="toggle('${subj.id}')">
+        <span class="subject-title">${subj.title}</span>
+        <div class="subject-meta">
+          <span class="subject-dur">⏱ ${subj.dur}</span>
+          <div class="subj-bar-wrap"><div class="subj-bar-fill" id="bar-${subj.id}" style="width:${r.pct}%"></div></div>
+          <span class="subject-pct" id="pct-${subj.id}">${r.pct}%</span>
+          <span class="subject-chevron">▼</span>
+        </div>
+      </div>
+      <div class="subject-body">${body}</div>
+    </div>`;
+  }).join('');
+}
+function toggle(id){document.getElementById('sb-'+id).classList.toggle('open')}
+function tog(sid,si,idx,f,el){
+  const on=!el.classList.contains('on');el.classList.toggle('on',on);setChk(sid,si,idx,f,on);
+  const subj=SUBJECTS.find(s=>s.id===sid);if(subj){const r=calcSubject(subj);
+    document.getElementById('pct-'+sid).textContent=r.pct+'%';document.getElementById('bar-'+sid).style.width=r.pct+'%';}
+  refreshOverall();
+}
+function initStorage() {
+  const state = gs();
+  let dirty = false;
+  SUBJECTS.forEach(subj => {
+    subj.sections.forEach((sec, si) => {
+      sec.items.forEach((item, idx) => {
+        ["lec","anki"].forEach(f => {
+          const k = subj.id + "_" + si + "_" + idx + "_" + f;
+          if (!(k in state)) { state[k] = item[f]; dirty = true; }
+        });
+      });
+    });
+  });
+  if (dirty) ss(state);
+}
+initStorage();buildAll();refreshOverall();
+</script>
+</body></html>
