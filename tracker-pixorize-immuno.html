@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Pixorize Immuno — Step 1</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="index.html">Step 1 Study Hub 🌿</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="tracker-sketchy-micro.html">Sketchy Micro</a></li>
+    <li><a href="tracker-sketchy-pharm.html">Sketchy Pharm</a></li>
+    <li><a href="tracker-bootcamp.html">Bootcamp</a></li>
+    <li><a href="tracker-pixorize-immuno.html" class="active">Pixorize Immuno</a></li>
+    <li><a href="tracker-pixorize-biochem.html">Pixorize Biochem</a></li>
+  </ul>
+</nav>
+<div class="tracker-page">
+  <a class="back-link" href="index.html">← Back to Hub</a>
+  <div class="tracker-page-header">
+    <h1>🔬 <em>Pixorize Immuno</em></h1>
+    <p>Immunoglobulins · Complement · Cytokines · Immunodeficiencies — click to expand.</p>
+  </div>
+  <div class="progress-header">
+    <div>
+      <div class="prog-big-num" id="overall-pct">0%</div>
+      <div class="prog-big-label">overall complete</div>
+    </div>
+    <div class="prog-bar-full">
+      <div class="prog-bar-full-wrap"><div class="prog-bar-full-fill" id="overall-bar" style="width:0%"></div></div>
+      <div class="prog-bar-full-label" id="overall-label">0 of 0 items checked</div>
+    </div>
+  </div>
+  <div id="subjects"></div>
+</div>
+<footer>Step 1 Study Hub · 🌿</footer>
+<script>
+const SUBJECTS = [
+  {id:'immunoglobulins', title:'Immunoglobulins', dur:'34:34', sections:[{items:[
+      {n:'Immunoglobulin A (IgA)', dur:'6:45', lec:false, anki:false},
+      {n:'Immunoglobulin G (IgG)', dur:'8:55', lec:false, anki:false},
+      {n:'Immunoglobulin M (IgM)', dur:'7:05', lec:false, anki:false},
+      {n:'Immunoglobulin E (IgE)', dur:'9:22', lec:false, anki:false},
+      {n:'Immunoglobulin D (IgD)', dur:'2:25', lec:false, anki:false}
+  ]}]},
+  {id:'complement', title:'Complement', dur:'32:26', sections:[{items:[
+      {n:'Common Complement Pathway', dur:'13:41', lec:false, anki:false},
+      {n:'Classical Complement Pathway', dur:'7:03', lec:false, anki:false},
+      {n:'Alternative Complement Pathway', dur:'5:57', lec:false, anki:false},
+      {n:'Lectin Complement Pathway', dur:'5:44', lec:false, anki:false}
+  ]}]},
+  {id:'other_cell_types', title:'Other Cell Types', dur:'1h 41m', sections:[{items:[
+      {n:'Neutrophils – Overview', dur:'11:31', lec:false, anki:false},
+      {n:'Neutrophils – Granules', dur:'9:34', lec:false, anki:false},
+      {n:'Neutrophils – Oxidative Burst', dur:'11:03', lec:false, anki:false},
+      {n:'Basophils', dur:'8:20', lec:false, anki:false},
+      {n:'Eosinophils', dur:'11:37', lec:false, anki:false},
+      {n:'Mast Cells', dur:'14:20', lec:false, anki:false},
+      {n:'Monocytes / Macrophages', dur:'16:26', lec:false, anki:false},
+      {n:'Natural Killer (NK) Cells', dur:'13:07', lec:false, anki:false},
+      {n:'Dendritic Cells', dur:'5:11', lec:false, anki:false}
+  ]}]},
+  {id:'b_cells_and_t_cells', title:'B Cells and T Cells', dur:'2h 06m', sections:[{items:[
+      {n:'MHC I', dur:'7:55', lec:false, anki:false},
+      {n:'MHC II', dur:'10:13', lec:false, anki:false},
+      {n:'B Cells – Overview', dur:'6:47', lec:false, anki:false},
+      {n:'B Cells – Activation', dur:'9:24', lec:false, anki:false},
+      {n:'Plasma B Cells', dur:'5:47', lec:false, anki:false},
+      {n:'Memory B Cells', dur:'5:27', lec:false, anki:false},
+      {n:'T Cells – Overview', dur:'3:30', lec:false, anki:false},
+      {n:'T Cells – Activation', dur:'9:33', lec:false, anki:false},
+      {n:'T Cells – Differentiation', dur:'14:56', lec:false, anki:false},
+      {n:'Cytotoxic (Killer) T Cells', dur:'6:30', lec:false, anki:false},
+      {n:'Helper T Cells – Overview', dur:'6:42', lec:false, anki:false},
+      {n:'Th1 Cells', dur:'10:15', lec:false, anki:false},
+      {n:'Th2 Cells', dur:'11:14', lec:false, anki:false},
+      {n:'Th17 Cells', dur:'6:27', lec:false, anki:false},
+      {n:'Regulatory T Cells (Tregs)', dur:'11:15', lec:false, anki:false}
+  ]}]},
+  {id:'cytokines', title:'Cytokines', dur:'1h 04m', sections:[{items:[
+      {n:'TNF-alpha', dur:'6:03', lec:false, anki:false},
+      {n:'IL-1', dur:'7:07', lec:false, anki:false},
+      {n:'IL-2', dur:'6:34', lec:false, anki:false},
+      {n:'IL-3', dur:'2:40', lec:false, anki:false},
+      {n:'IL-4', dur:'5:53', lec:false, anki:false},
+      {n:'IL-5', dur:'5:08', lec:false, anki:false},
+      {n:'IL-6', dur:'5:29', lec:false, anki:false},
+      {n:'IL-8', dur:'2:29', lec:false, anki:false},
+      {n:'IL-10', dur:'3:26', lec:false, anki:false},
+      {n:'IL-12', dur:'4:30', lec:false, anki:false},
+      {n:'TGF-beta', dur:'3:31', lec:false, anki:false},
+      {n:'IFN-alpha and IFN-beta', dur:'2:54', lec:false, anki:false},
+      {n:'IFN-gamma', dur:'8:09', lec:false, anki:false}
+  ]}]},
+  {id:'immunodeficiencies', title:'Immunodeficiencies', dur:'1h 24m', sections:[{items:[
+      {n:'Selective IgA Deficiency', dur:'5:27', lec:false, anki:false},
+      {n:'Chediak-Higashi Syndrome', dur:'10:09', lec:false, anki:false},
+      {n:'DiGeorge Syndrome', dur:'10:06', lec:false, anki:false},
+      {n:'Bruton (X-linked) Agammaglobulinemia', dur:'9:05', lec:false, anki:false},
+      {n:'Hyper-IgM Syndrome', dur:'8:35', lec:false, anki:false},
+      {n:'IPEX', dur:'7:09', lec:false, anki:false},
+      {n:'Leukocyte Adhesion Deficiency (LAD)', dur:'9:40', lec:false, anki:false},
+      {n:'Chronic Granulomatous Disease (CGD)', dur:'7:50', lec:false, anki:false},
+      {n:'IL-12 Receptor Deficiency', dur:'8:58', lec:false, anki:false},
+      {n:'Wiskott-Aldrich Syndrome', dur:'7:39', lec:false, anki:false}
+  ]}]},
+  {id:'leukemias_and_lymphomas', title:'Leukemias and Lymphomas', dur:'1h 54m', sections:[{items:[
+      {n:'Acute Myelogenous Leukemia (AML)', dur:'7:15', lec:false, anki:false},
+      {n:'Acute Promyelocytic Leukemia (APL)', dur:'10:54', lec:false, anki:false},
+      {n:'Acute Lymphocytic Leukemia (ALL)', dur:'14:39', lec:false, anki:false},
+      {n:'Chronic Myelogenous Leukemia (CML)', dur:'10:43', lec:false, anki:false},
+      {n:'Chronic Lymphocytic Leukemia (CLL)', dur:'6:52', lec:false, anki:false},
+      {n:'Hairy Cell Leukemia (HCL)', dur:'8:24', lec:false, anki:false},
+      {n:'Hodgkin Lymphoma', dur:'6:52', lec:false, anki:false},
+      {n:'Burkitt Lymphoma', dur:'6:34', lec:false, anki:false},
+      {n:'Diffuse Large B Cell Lymphoma (DLBCL)', dur:'4:50', lec:false, anki:false},
+      {n:'Follicular Lymphoma', dur:'8:11', lec:false, anki:false},
+      {n:'Mantle Cell Lymphoma', dur:'8:16', lec:false, anki:false},
+      {n:'Marginal Zone Lymphoma', dur:'5:27', lec:false, anki:false},
+      {n:'Primary CNS Lymphoma (PCNSL)', dur:'4:26', lec:false, anki:false},
+      {n:'Adult T-Cell Leukemia/Lymphoma (ATLL)', dur:'4:58', lec:false, anki:false},
+      {n:'Mycosis Fungoides / Sezary Syndrome', dur:'5:54', lec:false, anki:false}
+  ]}]},
+  {id:'hypersensitivity_reactions', title:'Hypersensitivity Reactions', dur:'28:37', sections:[{items:[
+      {n:'Type 1 Hypersensitivity Reactions', dur:'9:41', lec:false, anki:false},
+      {n:'Type 2 Hypersensitivity Reactions', dur:'7:32', lec:false, anki:false},
+      {n:'Type 3 Hypersensitivity Reactions', dur:'6:06', lec:false, anki:false},
+      {n:'Type 4 Hypersensitivity Reactions', dur:'5:15', lec:false, anki:false}
+  ]}]},
+  {id:'immunosuppressants', title:'Immunosuppressants', dur:'30:14', sections:[{items:[
+      {n:'Cyclosporine', dur:'8:50', lec:false, anki:false},
+      {n:'Tacrolimus', dur:'6:39', lec:false, anki:false},
+      {n:'Sirolimus (Rapamycin)', dur:'6:43', lec:false, anki:false},
+      {n:'Basiliximab', dur:'3:47', lec:false, anki:false},
+      {n:'Mycophenolate', dur:'4:13', lec:false, anki:false}
+  ]}]},
+  {id:'transfusion_reactions', title:'Transfusion Reactions', dur:'27:00', sections:[{items:[
+      {n:'Anaphylactic Transfusion Reactions', dur:'4:35', lec:false, anki:false},
+      {n:'Acute Hemolytic Transfusion Reaction', dur:'10:56', lec:false, anki:false},
+      {n:'Febrile Nonhemolytic Transfusion Reaction', dur:'5:54', lec:false, anki:false},
+      {n:'TRALI', dur:'5:33', lec:false, anki:false}
+  ]}]},
+  {id:'transplant_rejection', title:'Transplant Rejection', dur:'26:48', sections:[{items:[
+      {n:'Hyperacute Transplant Rejection', dur:'5:00', lec:false, anki:false},
+      {n:'Acute Transplant Rejection', dur:'5:29', lec:false, anki:false},
+      {n:'Chronic Transplant Rejection', dur:'7:15', lec:false, anki:false},
+      {n:'Graft vs Host Disease (GVHD)', dur:'9:03', lec:false, anki:false}
+  ]}]}
+];
+
+const KEY = 'pix_immuno_state';
+function gs(){{try{{return JSON.parse(localStorage.getItem(KEY)||'{{}}')}catch(e){{return{{}}}}}}
+function ss(s){{localStorage.setItem(KEY,JSON.stringify(s))}}
+function getChk(sid,si,idx,f){{const v=gs()[sid+'_'+si+'_'+idx+'_'+f];return v??null}}
+function setChk(sid,si,idx,f,v){{const s=gs();s[sid+'_'+si+'_'+idx+'_'+f]=v;ss(s)}}
+
+function calcSubject(subj){{
+  let total=0,done=0;
+  subj.sections.forEach((sec,si)=>sec.items.forEach((item,idx)=>{{
+    ['lec','anki'].forEach(f=>{{total++;const v=getChk(subj.id,si,idx,f);if((v!==null?v:item[f]))done++;}});
+  }}));
+  return{{pct:total?Math.round(done/total*100):0,done,total}};
+}}
+function calcOverall(){{
+  let total=0,done=0;
+  SUBJECTS.forEach(s=>{{const r=calcSubject(s);total+=r.total;done+=r.done;}});
+  return{{pct:total?Math.round(done/total*100):0,done,total}};
+}}
+function refreshOverall(){{
+  const r=calcOverall();
+  document.getElementById('overall-pct').textContent=r.pct+'%';
+  document.getElementById('overall-bar').style.width=r.pct+'%';
+  document.getElementById('overall-label').textContent=r.done+' of '+r.total+' items checked';
+}}
+function refreshSubject(sid){{
+  const subj=SUBJECTS.find(s=>s.id===sid);
+  if(!subj)return;
+  const r=calcSubject(subj);
+  document.getElementById('pct-'+sid).textContent=r.pct+'%';
+  document.getElementById('bar-'+sid).style.width=r.pct+'%';
+}}
+
+function buildAll(){{
+  document.getElementById('subjects').innerHTML=SUBJECTS.map(subj=>{{
+    const r=calcSubject(subj);
+    const body=subj.sections.map((sec,si)=>{{
+      const allIds={{lec:`all-lec-${{subj.id}}-${{si}}`,anki:`all-anki-${{subj.id}}-${{si}}`}};
+      // compute check-all state
+      function secAllOn(f){{return sec.items.every((item,idx)=>{{const v=getChk(subj.id,si,idx,f);return(v!==null?v:item[f]);}});}}
+      const rows=sec.items.map((item,idx)=>{{
+        const lecOn=getChk(subj.id,si,idx,'lec')??item.lec;
+        const ankiOn=getChk(subj.id,si,idx,'anki')??item.anki;
+        const dur=item.dur?`<span class="t-duration">${{item.dur}}</span>`:'';
+        return `<div class="t-item">
+          <span class="t-name">${{item.n}}</span>${{dur}}
+          <div class="check-grp">
+            <div class="check-col"><span class="check-lbl">Lec</span>
+              <div class="chk${{lecOn?' on':''}}" onclick="tog('${{subj.id}}',${{si}},${{idx}},'lec',this)"></div></div>
+            <div class="check-col"><span class="check-lbl">Anki</span>
+              <div class="chk${{ankiOn?' on':''}}" onclick="tog('${{subj.id}}',${{si}},${{idx}},'anki',this)"></div></div>
+          </div></div>`;
+      }}).join('');
+      const secTitle=sec.title?`<div class="sub-section-title">${{sec.title}}</div>`:'';
+      const allLecOn=secAllOn('lec'), allAnkiOn=secAllOn('anki');
+      const checkAllBar=`<div class="check-all-bar">
+        <span class="check-all-lbl">Check all</span>
+        <div class="check-grp">
+          <div class="check-col"><span class="check-lbl">Lec</span>
+            <div class="chk check-all${{allLecOn?' on':''}}" id="all-lec-${{subj.id}}-${{si}}"
+              onclick="togAll('${{subj.id}}',${{si}},'lec',this)"></div></div>
+          <div class="check-col"><span class="check-lbl">Anki</span>
+            <div class="chk check-all${{allAnkiOn?' on':''}}" id="all-anki-${{subj.id}}-${{si}}"
+              onclick="togAll('${{subj.id}}',${{si}},'anki',this)"></div></div>
+        </div></div>`;
+      return `<div class="sub-section">${{secTitle}}${{checkAllBar}}${{rows}}</div>`;
+    }}).join('');
+    return `<div class="subject-block" id="sb-${{subj.id}}">
+      <div class="subject-header" onclick="toggle('${{subj.id}}')">
+        <span class="subject-title">${{subj.title}}</span>
+        <div class="subject-meta">
+          ${{subj.dur?`<span class="subject-dur">⏱ ${{subj.dur}}</span>`:''}}
+          <div class="subj-bar-wrap"><div class="subj-bar-fill" id="bar-${{subj.id}}" style="width:${{r.pct}}%"></div></div>
+          <span class="subject-pct" id="pct-${{subj.id}}">${{r.pct}}%</span>
+          <span class="subject-chevron">▼</span>
+        </div>
+      </div>
+      <div class="subject-body">${{body}}</div>
+    </div>`;
+  }}).join('');
+}}
+
+function toggle(id){{document.getElementById('sb-'+id).classList.toggle('open')}}
+
+function tog(sid,si,idx,f,el){{
+  const on=!el.classList.contains('on');
+  el.classList.toggle('on',on);
+  setChk(sid,si,idx,f,on);
+  // update check-all state for this section
+  const subj=SUBJECTS.find(s=>s.id===sid);
+  if(subj){{
+    const sec=subj.sections[si];
+    const allOn=sec.items.every((_,i2)=>{{const v=getChk(sid,si,i2,f);const def=subj.sections[si].items[i2][f];return(v!==null?v:def);}});
+    const allEl=document.getElementById('all-'+f+'-'+sid+'-'+si);
+    if(allEl)allEl.classList.toggle('on',allOn);
+  }}
+  refreshSubject(sid);
+  refreshOverall();
+}}
+
+function togAll(sid,si,f,el){{
+  const on=!el.classList.contains('on');
+  el.classList.toggle('on',on);
+  const subj=SUBJECTS.find(s=>s.id===sid);
+  if(!subj)return;
+  const sec=subj.sections[si];
+  sec.items.forEach((item,idx)=>{{
+    setChk(sid,si,idx,f,on);
+    // find and update individual checkbox
+    const secEl=el.closest('.sub-section');
+    if(secEl){{
+      const items=secEl.querySelectorAll('.t-item');
+      const itemEl=items[idx];
+      if(itemEl){{
+        const cols=itemEl.querySelectorAll('.check-col');
+        const colIdx=f==='lec'?0:1;
+        const chk=cols[colIdx]?.querySelector('.chk');
+        if(chk)chk.classList.toggle('on',on);
+      }}
+    }}
+  }});
+  refreshSubject(sid);
+  refreshOverall();
+}}
+
+function initStorage(){{
+  const state=gs();let dirty=false;
+  SUBJECTS.forEach(subj=>{{
+    subj.sections.forEach((sec,si)=>{{
+      sec.items.forEach((item,idx)=>{{
+        ['lec','anki'].forEach(f=>{{
+          const k=subj.id+'_'+si+'_'+idx+'_'+f;
+          if(!(k in state)){{state[k]=false;dirty=true;}}
+        }});
+      }});
+    }});
+  }});
+  if(dirty)ss(state);
+}}
+
+initStorage();buildAll();refreshOverall();
+
+</script>
+</body></html>
